@@ -2,18 +2,32 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chess Opening Quiz</title>
+    
     <link rel="stylesheet" href="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.css">
+    
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h2>Opening: <span id="opening-name">Sicilian Defense</span></h2>
-    <div id="myBoard" style="width: 400px"></div>
-    <p id="status">Your move! Play the first move for Black.</p>
-    <button onclick="resetGame()">Restart</button>
+
+    <div class="container">
+        <h1>Chess Opening Trainer</h1>
+        <h2 id="opening-name">Goal: Play the Sicilian Defense</h2>
+        
+        <div id="myBoard" style="width: 400px; max-width: 100%;"></div>
+
+        <div class="info">
+            <p id="status">Your move! (White to move)</p>
+            <button onclick="location.reload()">Restart Quiz</button>
+        </div>
+    </div>
 
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
+    
     <script src="script.js"></script>
+
 </body>
 </html>
