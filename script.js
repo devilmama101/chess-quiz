@@ -30,7 +30,7 @@ function startNewQuiz() {
 }
 
 function removeHighlights() {
-    $('#myBoard .square-55d63').removeClass('highlight-hint');
+    $('.square-55d63').removeClass('highlight-hint');
 }
 
 function showHint() {
@@ -40,8 +40,8 @@ function showHint() {
     
     if (moveObj) {
         removeHighlights();
-        $(`#myBoard .square-${moveObj.from}`).addClass('highlight-hint');
-        $(`#myBoard .square-${moveObj.to}`).addClass('highlight-hint');
+        $(`.square-${moveObj.from}`).addClass('highlight-hint');
+        $(`.square-${moveObj.to}`).addClass('highlight-hint');
     }
 }
 
@@ -75,13 +75,12 @@ function handleMove(source, target) {
     }
 }
 
-// Support for clicking moves
 function onSquareClick(square) {
     if (moveFrom === null) {
         if (game.get(square)) {
             moveFrom = square;
             removeHighlights();
-            $(`#myBoard .square-${square}`).addClass('highlight-hint');
+            $(`.square-${square}`).addClass('highlight-hint');
         }
     } else {
         var source = moveFrom;
@@ -91,12 +90,13 @@ function onSquareClick(square) {
     }
 }
 
+// THIS IS THE CONFIG SECTION
 var config = {
     draggable: true,
     position: 'start',
     onDrop: handleMove,
     onSquareClick: onSquareClick,
-    pieceTheme: 'https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/img/chesspieces/wikipedia/{piece}.png'
+    pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png'
 };
 
 board = Chessboard('myBoard', config);
