@@ -3,23 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chess Opening Quiz</title>
+    <title>Chess Opening Trainer</title>
     
     <link rel="stylesheet" href="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.css">
-    
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
     <div class="container">
         <h1>Chess Opening Trainer</h1>
-        <h2 id="opening-name">Goal: Play the Sicilian Defense</h2>
+        <h2 id="opening-name">Loading...</h2>
         
-        <div id="myBoard" style="width: 400px; max-width: 100%;"></div>
+        <div id="myBoard" style="width: 400px; max-width: 90vw; margin: auto;"></div>
 
         <div class="info">
-            <p id="status">Your move! (White to move)</p>
-            <button onclick="location.reload()">Restart Quiz</button>
+            <p id="status">Follow the opening moves!</p>
+            <div id="controls">
+                <button id="hintBtn" onclick="showHint()" style="background-color: #3498db;">Give me a Hint</button>
+            </div>
         </div>
     </div>
 
