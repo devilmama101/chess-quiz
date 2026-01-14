@@ -1,6 +1,6 @@
 var board = null
 var game = new Chess()
-var correctMoves = ['e4', 'c5'] // Example: Sicilian Defense
+var correctMoves = ['e4', 'c5'] // Sicilian Defense
 var currentStep = 0
 
 function onDrop (source, target) {
@@ -12,7 +12,7 @@ function onDrop (source, target) {
 
   if (move === null) return 'snapback'
 
-  // Check if move matches the "Flashcard" answer
+  // Check move
   if (move.san === correctMoves[currentStep]) {
       document.getElementById('status').innerText = "Correct!"
       currentStep++
@@ -26,6 +26,9 @@ function onDrop (source, target) {
 var config = {
   draggable: true,
   position: 'start',
-  onDrop: onDrop
+  onDrop: onDrop,
+  // THIS LINE FIXES THE PIECES:
+  pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png'
 }
+
 board = Chessboard('myBoard', config)
