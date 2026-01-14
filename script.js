@@ -33,8 +33,8 @@ var config = {
     draggable: true,
     position: 'start',
     onDrop: onDrop,
-    // This specific URL is the most reliable source for pieces
-    pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png'
+    // New reliable image source
+    pieceTheme: 'https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/img/chesspieces/wikipedia/{piece}.png'
 };
 
 // 5. Render the board
