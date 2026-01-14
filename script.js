@@ -1,57 +1,18 @@
 var game = new Chess();
 var board = null;
+var moveFrom = null;
 
 const openings = [
-    { 
-        name: "Sicilian Defense", 
-        moves: ["e4", "c5"], 
-        why: "The Sicilian is the most popular response to e4. By playing c5, you create an asymmetrical position that allows Black to fight for the center without the immediate symmetry of e5. It sets up a complex, aggressive game where Black often gets great counter-attacking chances."
-    },
-    { 
-        name: "French Defense", 
-        moves: ["e4", "e6", "d4", "d5"], 
-        why: "The French is a solid, 'bulletproof' defense. You allow White a big center but immediately challenge it with d5. It sets up a closed game where you look to attack White's center from the sides later on."
-    },
-    { 
-        name: "Caro-Kann Defense", 
-        moves: ["e4", "c6", "d4", "d5"], 
-        why: "Often called 'The Rock,' the Caro-Kann is extremely solid. Like the French, you challenge the center with d5, but your Light-Squared Bishop isn't trapped behind your pawns, making your endgame very strong."
-    },
-    { 
-        name: "Ruy Lopez", 
-        moves: ["e4", "e5", "Nf3", "Nc6", "Bb5"], 
-        why: "One of the oldest and most studied openings. By putting the Bishop on b5, White puts immediate pressure on the Knight defending the e5 pawn. It sets up long-term positional pressure and is a favorite of World Champions."
-    },
-    { 
-        name: "Italian Game", 
-        moves: ["e4", "e5", "Nf3", "Nc6", "Bc4"], 
-        why: "A classic opening that develops pieces quickly. The Bishop on c4 eyes the weak f7 pawn (the weakest point in Black's camp). It's great for beginners because it focuses on rapid development and kingside castling."
-    },
-    { 
-        name: "Queen's Gambit", 
-        moves: ["d4", "d5", "c4"], 
-        why: "White 'offers' a pawn to lure Black's d-pawn away from the center. It's not a true gambit because White can easily get the pawn back. It sets up total control of the center and very organized development."
-    },
-    { 
-        name: "Scandinavian Defense", 
-        moves: ["e4", "d5"], 
-        why: "The most direct way to challenge White. You immediately force White to deal with the center. It's great for forcing White out of their prepared 'book' moves and into a game where every move matters early on."
-    },
-    { 
-        name: "King's Indian Defense", 
-        moves: ["d4", "Nf6", "c4", "g6"], 
-        why: "A 'hypermodern' opening. You let White take the center with pawns, then spend the whole game attacking those pawns. It sets up incredibly sharp, exciting tactical battles."
-    },
-    { 
-        name: "London System", 
-        moves: ["d4", "Nf6", "Bf4"], 
-        why: "The London is a 'set-and-forget' system for White. No matter what Black plays, you usually play the same solid moves. It sets up a very safe, solid position where you rarely fall into early traps."
-    },
-    { 
-        name: "Vienna Game", 
-        moves: ["e4", "e5", "Nc3"], 
-        why: "A clever alternative to the main lines. By playing Nc3 before Nf3, you keep the f-pawn free to move (the Vienna Gambit). It sets up surprising attacks that many players aren't prepared for."
-    }
+    { name: "Sicilian Defense", moves: ["e4", "c5"], why: "The Sicilian creates an unbalanced game where Black fights for the center with a wing pawn (c5). It's great for counter-attacking." },
+    { name: "French Defense", moves: ["e4", "e6", "d4", "d5"], why: "Solid and reliable. You challenge the center with d5 while keeping a very sturdy pawn structure." },
+    { name: "Caro-Kann Defense", moves: ["e4", "c6", "d4", "d5"], why: "Known as 'The Rock.' It's extremely hard for White to break through, and your endgame is usually better." },
+    { name: "Ruy Lopez", moves: ["e4", "e5", "Nf3", "Nc6", "Bb5"], why: "Classic and high-level. White pressures the knight to indirectly control the center." },
+    { name: "Italian Game", moves: ["e4", "e5", "Nf3", "Nc6", "Bc4"], why: "Focuses on rapid piece development and attacks the weak f7 square early on." },
+    { name: "Queen's Gambit", moves: ["d4", "d5", "c4"], why: "One of the most powerful openings for White. You exchange a wing pawn for total central dominance." },
+    { name: "Scandinavian Defense", moves: ["e4", "d5"], why: "Directly challenges White's e4 pawn on move one. It forces the game into open lines immediately." },
+    { name: "King's Indian Defense", moves: ["d4", "Nf6", "c4", "g6"], why: "A hypermodern favorite. You allow White to take the center so you can destroy it later with tactical strikes." },
+    { name: "London System", moves: ["d4", "Nf6", "Bf4"], why: "A very consistent 'system' for White that is hard for Black to surprise. Very safe and solid." },
+    { name: "Vienna Game", moves: ["e4", "e5", "Nc3"], why: "A tricky opening that avoids the most common lines and sets up sharp attacks on the Kingside." }
 ];
 
 var currentOpening, currentStep;
@@ -61,34 +22,80 @@ function startNewQuiz() {
     currentStep = 0;
     game.reset();
     board.position('start');
+    removeHighlights();
+    moveFrom = null;
     document.getElementById('opening-name').innerText = "Goal: " + currentOpening.name;
-    document.getElementById('status').innerText = "Your move! Follow the line...";
+    document.getElementById('status').innerHTML = "Your move! (Drag or Click to move)";
+    document.getElementById('hintBtn').style.display = 'inline-block';
 }
 
-function onDrop(source, target) {
+function removeHighlights() {
+    $('#myBoard .square-55d63').removeClass('highlight-hint');
+}
+
+function showHint() {
+    var nextMoveSan = currentOpening.moves[currentStep];
+    var tempGame = new Chess(game.fen());
+    var moveObj = tempGame.move(nextMoveSan);
+    
+    if (moveObj) {
+        removeHighlights();
+        $(`#myBoard .square-${moveObj.from}`).addClass('highlight-hint');
+        $(`#myBoard .square-${moveObj.to}`).addClass('highlight-hint');
+    }
+}
+
+function handleMove(source, target) {
     var move = game.move({ from: source, to: target, promotion: 'q' });
-    if (move === null) return 'snapback';
+
+    if (move === null) {
+        removeHighlights();
+        return 'snapback';
+    }
 
     if (move.san === currentOpening.moves[currentStep]) {
         currentStep++;
+        board.position(game.fen());
+        removeHighlights();
+        
         if (currentStep === currentOpening.moves.length) {
             document.getElementById('status').innerHTML = 
-                `<strong>Correct!</strong><br><br>${currentOpening.why}<br><br>` +
-                `<button onclick="startNewQuiz()" style="background: #e67e22">Try Next Opening</button>`;
+                `<div style="color: #2ecc71; font-weight: bold; margin-bottom: 10px;">Success!</div>` +
+                `<div style="font-size: 0.9rem; margin-bottom: 15px;">${currentOpening.why}</div>` +
+                `<button onclick="startNewQuiz()" style="background-color: #e67e22;">Next Opening</button>`;
+            document.getElementById('hintBtn').style.display = 'none';
         } else {
-            document.getElementById('status').innerText = "Correct! Keep going...";
+            document.getElementById('status').innerText = "Correct! Continue...";
         }
     } else {
-        document.getElementById('status').innerText = "Not quite the " + currentOpening.name + ". Try again!";
+        document.getElementById('status').innerText = "Not the " + currentOpening.name + " move. Try again!";
         game.undo();
+        removeHighlights();
         return 'snapback';
+    }
+}
+
+// Support for clicking moves
+function onSquareClick(square) {
+    if (moveFrom === null) {
+        if (game.get(square)) {
+            moveFrom = square;
+            removeHighlights();
+            $(`#myBoard .square-${square}`).addClass('highlight-hint');
+        }
+    } else {
+        var source = moveFrom;
+        var target = square;
+        moveFrom = null;
+        handleMove(source, target);
     }
 }
 
 var config = {
     draggable: true,
     position: 'start',
-    onDrop: onDrop,
+    onDrop: handleMove,
+    onSquareClick: onSquareClick,
     pieceTheme: 'https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/img/chesspieces/wikipedia/{piece}.png'
 };
 
